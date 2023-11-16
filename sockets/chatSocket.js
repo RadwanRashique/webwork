@@ -4,7 +4,7 @@ function intializeSocket(server) {
     const io = socketIo(server, {
         pingTimeout: 60000,
         cors: {
-            origin: ["*"]
+            origin: "*"
         },
     });
 
