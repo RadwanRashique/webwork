@@ -1,20 +1,12 @@
-
-
 require('dotenv').config()
-
 // to hash  password (encrypt)
-
 const bcrypt = require('bcryptjs')
-
 // razo
 const Razorpay = require("razorpay");
 var instance = new Razorpay({
     key_id: process.env.KEY_ID,
     key_secret: process.env.KEY_SECRET,
 });
-
-
-
 // developer model
 const Developer = require("../models/developerModel")
 // developer more details model
@@ -41,17 +33,12 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
     secure: true,
 });
-const { response } = require("express");
-const { upload } = require("../config/multer");
-const developerModel = require('../models/developerModel');
 
+const developerModel = require('../models/developerModel');
 const ChatConnectionModel = require('../models/chatModel')
 const ChatMessageModel = require('../models/ChatMessage');
 const notificationModel = require('../models/notification');
-
 let developermail
-
-
 // mail verification
 const sendVerifyMail = async (name, email, otp) => {
     try {
@@ -97,12 +84,8 @@ const sendVerifyMail = async (name, email, otp) => {
 
 }
 
-
-
 // registeration of developer
 const developerRegister = async (req, res) => {
-
-
     try {
 
         const developerExists = await Developer.findOne({ email: req.body.email })
@@ -143,9 +126,6 @@ const developerRegister = async (req, res) => {
 
 
     }
-
-
-
     catch (error) {
 
 
@@ -160,8 +140,6 @@ const developerRegister = async (req, res) => {
 
 // to vefify otp after registering
 const verifyOtp = async (req, res) => {
-
-
     try {
 
         const VerifiedOtp = await Developer.findOne({ email: req.body.email })
@@ -182,17 +160,10 @@ const verifyOtp = async (req, res) => {
         res.status(500).send({ message: "Error in otp ", success: false })
     }
 }
-
-
-
-
 // login
 
 const verifyLogin = async (req, res) => {
-
-
     try {
-
         const developer = await Developer.findOne({ email: req.body.email })
 
         if (!developer) {
@@ -215,10 +186,6 @@ const verifyLogin = async (req, res) => {
         const cpassword = req.body.password
         const isVerfied = developer.isVerfied
         const isBlocked = developer.isBlocked
-
-
-
-
         const passwordMatch = await bcrypt.compare(cpassword, password);
 
         if (!passwordMatch) {
@@ -297,12 +264,7 @@ const developerForgetPassword = async (req, res) => {
 
 // verify  otp entered by the user ( to reset password)
 const developerforgetOtpVerify = async (req, res) => {
-
-
-
-
     const Enteredmail = req.body.email
-
     try {
 
         const EnteredOtp = req.body.otp
@@ -364,9 +326,6 @@ const getForgetResendOtp = async (req, res) => {
 
 // developer will enter new password
 const developerResetPassword = async (req, res) => {
-
-
-
     let EnteredPassword = req.body.password
 
     const developermail = req.body.email
@@ -395,13 +354,15 @@ const homeDisplayName = async (req, res) => {
         const devId = req.body.developerId
 
 
+
         const developer = await Developer.findOne({ _id: req.body.developerId })
 
         const developerName = developer;
 
 
+
         // Send the user's name as part of the JSON response
-        res.status(200).send({ developerName, devId });
+        res.status(200).send({ developerName, devId, success: true });
 
     }
     catch (error) {
@@ -411,21 +372,11 @@ const homeDisplayName = async (req, res) => {
 
 
 }
-
-
-
 // collecting all details of developer
 const developerAllData = async (req, res) => {
-
-
     try {
-
         const Data = await developerDetails.findOne({ userId: req.body.developerId })
-
         if (!Data) {
-
-
-
             const img = await cloudinary.uploader.upload(
                 "./config/uploads/img/" + req.file.filename
             )
@@ -652,9 +603,6 @@ const editDetailedData = async (req, res) => {
                     userId: req.body.developerId,
                 }
             })
-
-
-
             const subedData = await subscriptionPayedModel.updateOne({ userId: req.body.developerId }, {
                 $set: {
                     field: req.body.field,
@@ -760,18 +708,7 @@ const verifyPayments = async (req, res) => {
         hmac = hmac.digest('hex')
         const advance = details.order.amount / 100
         if (hmac == details.payment.razorpay_signature) {
-            // await bModel.findOneAndUpdate({
-            //     'orders._id': details.order.receipt
-            // },
-            //     { $set: { "orders.$.payment_id": details.payment.razorpay_payment_id } })
 
-            // await bModel.findOneAndUpdate({ 'orders._id': details.order.receipt }, {
-            //     $set: {
-            //         "orders.$.status": "Booked",
-            //         "orders.$.amount": advance,
-            //         "orders.$.timestamp": new Date()
-            //     }
-            // })
             const planData = await subscriptionModel.findById(details.id)
             const devloper = await developerModel.findById({ _id: details.developerId })
             const DeveloperBigData = await developerDetails.findOne({ userId: details.developerId })
@@ -887,13 +824,6 @@ const verifyPayments = async (req, res) => {
 
             }
 
-            // await userNotificationModel.findOneAndUpdate({ 'notifications.booking_id': details.order.receipt }, {
-            //     $set: {
-            //         'notifications.$.Actions': 'Booked',
-            //         'notifications.$.status': false
-            //     }
-
-            // })
 
             return res.status(200).send({ message: 'payment success full', success: true })
 
@@ -932,7 +862,9 @@ const getUserChatList = async (req, res) => {
 
 
         const developerId = req.body.developerId
+
         const data = await ChatConnectionModel.find({ developerId: developerId })
+        const count = data.length
 
         if (data.length > 0) {
 
@@ -952,17 +884,10 @@ const getUserChatList = async (req, res) => {
 const Room = async (req, res) => {
 
     try {
-        // devId: '653f8b86cb749b6a4439efaa',
-        // UserId: '652e817a864bba97ef01ef72',
-
-
-
         const developerId = req.body.devId
         const userId = req.body.UserId
 
         const chatConnectionData = await ChatConnectionModel.findOne({ userId: userId, developerId: developerId })
-
-
         const room_id = chatConnectionData._id
 
 

@@ -1,7 +1,4 @@
 require('dotenv').config()
-
-
-
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken")
 const User = require('../models/userModel')
@@ -29,28 +26,29 @@ cloudinary.config({
 
 
 const adminLogin = async (req, res) => {
+
+  console.log(req.body)
   try {
-
-
-
     // admin verify
-
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       if (user.isadmin != 1) {
-        return res
-          .status(200).send({ message: "This mail does't match", success: false });
+       
+        return res.status(200).send({ message: "This mail does't match", success: false });
       }
       else {
+       
         const passwordMatch = await bcrypt.compare(
           req.body.password,
           user.password
         );
         if (!passwordMatch) {
+        
           return res
-            .status(400)
+            .status(200)
             .send({ message: "please check your password", success: false });
         } else {
+         
           const admintoken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: "1d",
           });
@@ -95,6 +93,7 @@ const userDetails = async (req, res) => {
 // to block and unblock user
 
 const blockUser = async (req, res) => {
+  
   try {
     const user = await User.findOne({ _id: req.body.id });
     const userUpdated = await User.findOneAndUpdate(
@@ -163,10 +162,6 @@ const addingSubscriptionPlan = async (req, res) => {
     const plan = await newplanData.save()
 
     res.status(200).send({ message: "plan successfully created", success: true })
-
-
-
-
   }
 
   catch (error) {
@@ -195,6 +190,7 @@ const getPlanData = async (req, res) => {
 const deletePlan = async (req, res) => {
 
   try {
+
     const id = req.body.id
 
     const deletePlan = await subscription.findByIdAndDelete({ _id: id })
@@ -218,21 +214,10 @@ const getRequestData = async (req, res) => {
     // Extract the user IDs from developerDetails
     const userIds = developerDetails.map(detail => detail.userId);
 
-
-
-
-
     // Query the "developer" collection for developers with matching user IDs
     const developerData = await Developer.find({ _id: { $in: userIds } })
 
-
-
-
-
     res.send({ success: true, message: "Data retrieved successfully", developerData, developerDetails });
-
-
-
   }
   catch (error) {
 
@@ -254,9 +239,6 @@ const developerDetailedView = async (req, res) => {
       developerDetails,
       Data
     }
-
-
-
     res.status(200).send({ message: "Check developer details", data: Alldata, success: true })
   }
   catch (error) {
@@ -329,9 +311,6 @@ const adminCreateBanner = async (req, res) => {
       res.status(200).send({ message: "Banner successfully created", success: true })
     }
 
-
-
-
   } catch (error) {
     console.log(error, "at adminCreateBanner ")
     res.status(500).send({ message: "some thing went wrong", success: false })
@@ -370,14 +349,7 @@ const handlingBanner = async (req, res) => {
 const getDataToDash = async (req, res) => {
   try {
     const userCount = await User.countDocuments({});
-    // different why to pic it
-    //     const userCoun = await User.estimatedDocumentCount({});
-    //     const userCou = await User.find({});
-    //     const userCo = await User.aggregate([{
-    // $group:{_id:null,
-    //   count:{$sum:1}}
 
-    //     }]);
     const developerCount = await Developer.countDocuments({})
     const revenueByMonth = {};
     const developerData = await Developer.find({})
@@ -386,7 +358,7 @@ const getDataToDash = async (req, res) => {
 
     const aggregationPipeline = [
       {
-        $match: {} // You can add match conditions here if needed
+        $match: {} //  can add match conditions here if needed
       },
       {
         $unwind: '$paymentHistory'

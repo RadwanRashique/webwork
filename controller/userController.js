@@ -1,15 +1,10 @@
-
 require('dotenv').config()
-
 // to hash  password (encrypt)
-
 const bcrypt = require('bcryptjs')
-
 // user model
 const User = require("../models/userModel")
 // developer model
 const Developer = require("../models/developerModel")
-
 const Banner = require('../models/bannerModel')
 // developerDetailed data model
 const developerDetails = require("../models/developerDetailsModel")
@@ -33,8 +28,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
     secure: true,
 });
-const { response } = require("express");
-const { upload } = require("../config/multer");
 const developerDetailsModel = require('../models/developerDetailsModel')
 const UserCommentRatings = require('../models/userCommentRatings')
 
@@ -44,7 +37,7 @@ const ChatMessageModel = require('../models/ChatMessage')
 // to send notification  to developer (notificationModel)
 const NotificationModel = require('../models/notification')
 
-var usermail
+
 
 // mail verification
 const sendVerifyMail = async (name, email, otp) => {
@@ -95,8 +88,7 @@ const sendVerifyMail = async (name, email, otp) => {
 
 const register = async (req, res) => {
     let Email = req.body.email
-
-
+    
     try {
 
         const userExists = await User.findOne({ email: Email })
@@ -147,14 +139,10 @@ const register = async (req, res) => {
 
 // to vefify otp after registering
 const verifyOtp = async (req, res) => {
-
-
+   
     let EnteredOtp = req.body.otp
     try {
         const VerifiedOtp = await User.findOne({ otp: EnteredOtp })
-
-
-
         if (!VerifiedOtp) {
 
             return res.send({ message: 'otp is not valid', success: false })
@@ -201,10 +189,6 @@ const verifyResendOtp = async (req, res) => {
 
     catch (error) {
         console.log(error, "AT verifyResendOt")
-
-
-
-
     }
 }
 
@@ -213,6 +197,7 @@ const verifyResendOtp = async (req, res) => {
 
 const verifyLogin = async (req, res) => {
     try {
+       
 
         const user = await User.findOne({ email: req.body.email })
 
@@ -300,12 +285,13 @@ const tokenVerify = async (req, res) => {
 // to desplay name at header 
 const homeName = async (req, res) => {
     try {
+
         const user = await User.findOne({ _id: req.body.userId })
         const userName = user;
 
 
         // Send the user's name as part of the JSON response
-        res.status(200).send({ userName });
+        res.status(200).send({ userName, success: true });
 
     }
     catch (error) {
@@ -436,7 +422,7 @@ const userProfile = async (req, res) => {
 // edit user details
 const userEditProfile = async (req, res) => {
 
-
+console.log(req.body)
     try {
 
         if (!req.body.name && !req.body.phone && !req.body.age) {
@@ -464,9 +450,6 @@ const ImageUpload = async (req, res) => {
 
 
         const image = req.file.filename;
-
-
-
         const data = await cloudinary.uploader.upload(
             "./config/uploads/img/" + req.file.filename
         )
@@ -498,8 +481,6 @@ const getdeveloperdataList = async (req, res) => {
     try {
 
         const Data = await subscribedDeveloper.find({ dateOver: false })
-
-
         res.status(200).send({ message: "conntect With developers", data: Data, success: true })
     }
 
@@ -519,13 +500,7 @@ const getdeveloperView = async (req, res) => {
 
         const Id = req.body.idData
         const userid = req.body.userId
-
-
-
-
         const followstatus = await User.findById({ _id: userid })
-
-
 
         // Check if the developer's ID is in the user's developerYouFollow array
         const isFollowingDeveloper = followstatus.developerYouFollow.includes(Id);
@@ -549,19 +524,7 @@ const getdeveloperView = async (req, res) => {
 
         return res.status(200).send({ message: "follow and connect with developer", data: data, isFollowingDeveloper: isFollowingDeveloper, starRate: StarRatingDone, comment: comments, userid, success: true })
 
-
-
-
-
     }
-
-
-
-
-
-
-
-
     catch (error) {
         console.log(error, "error in getdeveloperView")
         res.status(200).send({ message: "something went wrong", success: false })
@@ -654,11 +617,6 @@ const postCommentAndRating = async (req, res) => {
         const devId = req.body.developerId
         const developerData = await subscribedDeveloper.findOne({ userId: devId })
         let avgdevRating = developerData.avgRating
-
-
-
-
-
         const developerId = req.body.developerId
         const userId = req.body.userId
         const commentRatingDetails = await UserCommentRatings.findOne({ userId: userId, devloperId: developerId })
@@ -768,26 +726,9 @@ const postCommentAndRating = async (req, res) => {
 
                 developerData.avgRating = avgdevRating
                 const da = await developerData.save()
-
-
-
-
-
-
-
                 res.status(200).send({ message: "Successfully submited", success: true })
             }
         }
-
-
-
-
-
-
-
-
-
-
     } catch (error) {
         console.log(error, "ATpostCommentAndRating ")
         res.status(500).send({ message: "server error", success: false })
@@ -914,7 +855,6 @@ module.exports = {
     verifyOtp,
     verifyResendOtp,
     forgetPassword,
-
     forgetOtpVerify,
     resetPassword,
     userProfile,

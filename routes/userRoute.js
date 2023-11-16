@@ -36,7 +36,7 @@ userrouter.post("/resetPassword", userController.resetPassword)
 
 userrouter.get("/getProfile", userAuthMiddleware, userController.userProfile)
 
-userrouter.post("/editData", userController.userEditProfile)
+userrouter.post("/editData",userAuthMiddleware, userController.userEditProfile)
 
 userrouter.post("/updateImage", upload.upload.single("image"), userAuthMiddleware, userController.ImageUpload)
 

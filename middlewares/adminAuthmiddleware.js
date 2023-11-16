@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
     try {
 
         const admintoken = req.headers['authorization'].split(" ")[1]
-       
+
         jwt.verify(admintoken, process.env.JWT_SECRET, (err, decode) => {
             if (err) {
                 console.log(err);

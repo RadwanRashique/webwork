@@ -11,19 +11,19 @@ const AdminAuthmiddleware = require('../middlewares/adminAuthmiddleware')
 
 Adminrouter.post("/adminlogin", AdminController.adminLogin);
 
-Adminrouter.get("/getuserdetails", AdminController.userDetails)
+Adminrouter.get("/getuserdetails",AdminAuthmiddleware, AdminController.userDetails)
 
-Adminrouter.post("/blockuser", AdminController.blockUser)
+Adminrouter.post("/blockuser",AdminAuthmiddleware, AdminController.blockUser)
 
-Adminrouter.get("/developerdetails", AdminController.developerDetails)
+Adminrouter.get("/developerdetails",AdminAuthmiddleware, AdminController.developerDetails)
 
-Adminrouter.post("/blockdeveloper", AdminController.blockDeveloper)
+Adminrouter.post("/blockdeveloper",AdminAuthmiddleware, AdminController.blockDeveloper)
 
-Adminrouter.post("/addPlan", AdminController.addingSubscriptionPlan)
+Adminrouter.post("/addPlan",AdminAuthmiddleware, AdminController.addingSubscriptionPlan)
 
-Adminrouter.get("/PlanData", AdminController.getPlanData)
+Adminrouter.get("/PlanData",AdminAuthmiddleware, AdminController.getPlanData)
 
-Adminrouter.post("/deletePlan", AdminController.deletePlan)
+Adminrouter.post("/deletePlan",AdminAuthmiddleware, AdminController.deletePlan)
 
 Adminrouter.get("/developerRequestData",AdminAuthmiddleware, AdminController.getRequestData)
 
