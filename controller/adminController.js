@@ -49,7 +49,7 @@ const adminLogin = async (req, res) => {
             .send({ message: "please check your password", success: false });
         } else {
          
-          const admintoken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+          const admintoken = jwt.sign({ id: user._id ,role:"Admin"}, process.env.JWT_SECRET, {
             expiresIn: "1d",
           });
 

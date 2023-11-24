@@ -239,7 +239,7 @@ const verifyLogin = async (req, res) => {
 
                 }
                 else {
-                    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" })
+                    const token = jwt.sign({ id: user._id,role: "USER" }, process.env.JWT_SECRET, { expiresIn: "1d" })
                     res.status(200).send({ message: "Login successful", success: true, data: token })
                 }
             }
