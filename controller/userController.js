@@ -87,6 +87,7 @@ const sendVerifyMail = async (name, email, otp) => {
 // register
 
 const register = async (req, res) => {
+    console.log(req.body)
     let Email = req.body.email
     
     try {
@@ -422,7 +423,7 @@ const userProfile = async (req, res) => {
 // edit user details
 const userEditProfile = async (req, res) => {
 
-console.log(req.body)
+
     try {
 
         if (!req.body.name && !req.body.phone && !req.body.age) {

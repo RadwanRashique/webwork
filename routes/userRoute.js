@@ -60,7 +60,7 @@ userrouter.get('/getChatList',userAuthMiddleware,userController.getChatList)
 
 // to get banner data at landing page
 
-userrouter.get("/", userController.getLandingBanner)
+userrouter.get("/banData", userController.getLandingBanner)
 
 
 
